@@ -9,16 +9,16 @@ class Calculator:
         mul = 0
         for ss in s:
             if ss.isdigit():
-                current = int(ss) + 10*current
+                current = int(ss)
             elif ss in ["*", "/"]:
-                if 
-                result = sign * current
-                current = 0
-                mul = 1
                 if ss == "*":
-                    sign = 1
-                else:
-                    sign = -1
+                    result = sign * current
+                    current = 0
+                    mul = 1
+                elif ss == "/":
+                    result = current // sign
+                    current = 0
+                    mul = 2
         
 
             elif ss in ["-", "+"]:
@@ -41,7 +41,10 @@ class Calculator:
                 current = 0
         
         if mul == 1:
-            return result * current * sign
+            return result * current
+        
+        elif mul == 2:
+            return result // current
 
         else:       
             return result + current * sign
