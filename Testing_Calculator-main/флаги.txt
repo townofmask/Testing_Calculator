@@ -1,0 +1,5 @@
+py.test Test_Calculator.py
+py.test -m suit2 -v - по маркам
+
+
+python Unittest.py -v
