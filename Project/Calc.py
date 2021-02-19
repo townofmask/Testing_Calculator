@@ -1,3 +1,5 @@
+from Calc import calculatim
+
 operands = ('1', '2', '3', '4', '5', '6', '7', '8', '9', '0', ',', '.')
 znaki = ('+', '-', '*', '/','(', ')')
 
@@ -9,6 +11,7 @@ class Calculator:
         s = s.replace(',', '.')
         stack_num = []
         stack_znaki = []
+        metod = 1
         
         for element in s:
             if element in operands:
@@ -16,39 +19,54 @@ class Calculator:
                     element = int(element) * int(sign)
                     element = str(element)
                     sign = 1
-                if buffer == '':
+                    if buffer == '':
+                        buffer = element
+                    else: 
+                        buffer += element
+                elif buffer == '':
                     buffer = element
                 else:
                     buffer += element
-            elif element in znaki:    
+                
+                
+            elif element in znaki:
+                metod = 1 
                 if element in ["-"]:
                         sign = -1
                         element = "+"
+                        stack_num.append(buffer)
+                        buffer = ''
+                        stack_znaki.append(element)
+                elif element == ')':
+                    metod = 2
+                    stack_num.append(buffer)
+                    buffer = ''
+                    znak = ''
+                    while znak != '(':
+                        znak = stack_znaki.pop()
+                        if znak == '(':
+                            break
+                        a, b = stack_num.pop(), stack_num.pop()
+                        a, b = float(b), float(a)
+                        result = calculatim(znak,a,b) 
+                        stack_num.append(result)
+                    metod = 1
+                else:            
+                    stack_znaki.append(element)
+                    if buffer != '':
+                        stack_num.append(buffer)
+                        buffer = ''
+        
+        if metod == 1:
+            if buffer != '':
                 stack_num.append(buffer)
                 buffer = ''
-                stack_znaki.append(element)
-
-        if buffer != '':
-            stack_num.append(buffer)
-        while stack_znaki != []:
-            a, b = stack_num.pop(), stack_num.pop()
-            znak = stack_znaki.pop()
-            a, b = float(b), float(a)
-            
-            def calc(znak,a,b):
-                if znak == '+':
-                    return a + b
-                elif znak == '-':
-                    return a - b
-                elif znak == '*':
-                    return a*b
-                elif znak == '/':
-                    if b==0:
-                        return 'Деление на ноль!'
-                    else:
-                        return a/b 
-            result = calc(znak,a,b) 
-            stack_num.append(result)
+            while stack_znaki != []:
+                a, b = stack_num.pop(), stack_num.pop()
+                znak = stack_znaki.pop()
+                a, b = float(b), float(a)
+                result = calculatim(znak,a,b)
+                stack_num.append(result)
         result = stack_num.pop()
         return result
 
@@ -74,7 +92,7 @@ while user_input not in ["exit"]:
                         ch=0
                         continue
             if ch == 1:
-                print(user_input + ' - ...Launching')
+                print(user_input + ' = ...Launching')
                 output = calc.calculate(user_input)
                 print(output)
                 break
