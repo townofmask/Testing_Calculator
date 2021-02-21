@@ -9,6 +9,9 @@ class Calculator:
         sign = 1
         s = s.replace(' ', '')
         s = s.replace(',', '.')
+        s = s.replace('(-', '(0-')                                              
+        s = s.replace('(((', '(1*(1*(') 
+        s = s.replace('((', '(1*(')    
         stack_num = []
         stack_znaki = []
         metod = 1
@@ -73,30 +76,62 @@ class Calculator:
 print("Launching...")
 calc = Calculator()
 user_input = ""
-ch = ""
 while user_input not in ["exit"]:
     user_input = input("> ")
-    if user_input == 'exit':
-        break
-    else:
+    ch = ""
+    zn = 0
+    oper = 0
+    invalid_check = 0
+    brackets_check = 0
+
+    for m in user_input:
+        if m not in znaki and m not in operands:
+            invalid_check = 1
+    
+    if user_input[len(user_input)-1] in ['+', '-', '*', '/'] or user_input[len(user_input)-1] == '(':
+            invalid_check = 1
+    
+    if user_input[0] == '-' and (user_input[1] in operands or user_input[1] == '('):
+        if len(user_input) >= 2:
+            user_input = user_input[:0] + '0' + user_input[0:]
+            kostyl = 1
+
+    for m in user_input:
+        if m == '(':
+            continue
+        elif m == ')':
+            continue
+        if m in operands:
+            oper += 1
+        if oper == 0:
+            invalid_check = 1
+
+    if m in operands:
         for m in user_input:
-            if m not in znaki and m not in operands:
-                print('Please write an expression!')
+            if m == '(':
+                continue
+            elif m == ')':
+                continue
+            if m in znaki:
+                zn = 1
                 break
-            elif m in operands:
-                for m in user_input:
-                    if m in znaki:
-                        ch=1
-                        break
-                    else:
-                        ch=0
-                        continue
-            if ch == 1:
-                print(user_input + ' = ...Launching')
-                output = calc.calculate(user_input)
-                print(output)
-                break
-            elif ch == 0:    
-                print(user_input + ' - Please write an expression!')
-                break
+        if zn != 1:
+            invalid_check = 1
+
+    for m in user_input:
+        if m == '(':
+            brackets_check += 1
+        elif m == ')':
+            brackets_check -= 1
+    if brackets_check < 0:
+        invalid_check = 1
+    elif brackets_check > 0:
+        invalid_check = 1
+    if invalid_check == 1:
+        print('Invalid expression!')
+
+    if invalid_check != 1:        
+        print(user_input + ' = ...Launching')
+        output = calc.calculate(user_input, )
+        print(output)
 print("Closing...")
