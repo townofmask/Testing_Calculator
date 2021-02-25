@@ -169,5 +169,7 @@ calc = Calculator()
 user_input = ""
 while user_input not in ["exit"]:
     user_input = input("> ")
+    if user_input == 'exit':
+        break
     str_check(user_input)
 print("Closing...")
